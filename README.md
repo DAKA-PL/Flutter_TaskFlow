@@ -56,3 +56,20 @@ DELETE /tasks/:id eliminar tarea
 
 La API concreta se elegirá después. Estas rutas son requisitos, no
 direcciones de un servidor ya conectado.
+
+## API de tareas
+
+TaskFlow consume tareas reales desde una API REST de práctica mediante el paquete **Dio**, siguiendo la cadena de arquitectura `TaskApiService` → `RemoteTaskRepository` → `TasksViewModel`.
+
+* **URL exacta del endpoint:** `https://jsonplaceholder.typicode.com/todos`
+* **Parámetro de consulta aplicado:** `userId = 3` (`GET /todos?userId=3`), utilizado para filtrar únicamente las tareas pertenecientes al usuario seleccionado.
+* **Campos recibidos desde el servidor (JSON):**
+  * `id` (`int`): Identificador único de la tarea.
+  * `title` (`String`): Título de la tarea.
+  * `completed` (`bool`): Estado remoto, mapeado a la propiedad `isCompleted` del modelo `Task`.
+  * `userId` (`int`): Identificador del usuario propietario.
+* **Valores completados por defecto en TaskFlow (`Task.fromJson`):**
+  * `description`: `'Sin descripción (API)'` (la API pública no incluye descripción).
+  * `priority`: `'Sin prioridad (API)'` (la API pública no incluye nivel de prioridad).
+* **Comportamiento del cambio de estado (Persistencia):**
+  * Marcar una tarea como completada o pendiente desde la pantalla de detalle actualiza únicamente la copia en memoria almacenada en `RemoteTaskRepository` y notifica a las vistas mediante `Provider`. Al reiniciar la aplicación, los datos vuelven a descargarse desde el servidor con su estado original.
