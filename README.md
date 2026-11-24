@@ -73,3 +73,12 @@ TaskFlow consume tareas reales desde una API REST de práctica mediante el paque
   * `priority`: `'Sin prioridad (API)'` (la API pública no incluye nivel de prioridad).
 * **Comportamiento del cambio de estado (Persistencia):**
   * Marcar una tarea como completada o pendiente desde la pantalla de detalle actualiza únicamente la copia en memoria almacenada en `RemoteTaskRepository` y notifica a las vistas mediante `Provider`. Al reiniciar la aplicación, los datos vuelven a descargarse desde el servidor con su estado original.
+
+  ## Estados de interfaz en la consulta remota
+
+TaskFlow distingue cuatro estados explícitos durante la carga de tareas desde la API mediante `TasksViewModel` (`ChangeNotifier`) y los renderiza de forma reactiva en `TaskListScreen` (`context.watch` y `context.read`):
+
+* **Carga (`isLoading == true`):** Se muestra un `CircularProgressIndicator` acompañado del texto *"Cargando tareas desde el servidor..."* y se deshabilita el botón de recarga superior para evitar peticiones simultáneas. Se comprobó limitando la velocidad de red a *Slow 3G* en Chrome DevTools.
+* **Éxito (`tasks.isNotEmpty`):** Renderiza las 20 tareas del usuario `3` dentro de un `RefreshIndicator` + `ListView.builder`, permitiendo actualizar deslizando hacia abajo o pulsando el ícono superior.
+* **Vacío (`isEmpty == true`):** Se provocó cambiando temporalmente la constante `userId` a `9999` en `TaskApiService`. El servidor responde con HTTP 200 y lista vacía (`[]`), mostrando el ícono de bandeja vacía, el mensaje *"No hay tareas asignadas a este usuario."* y el botón **Actualizar**.
+* **Error (`errorMessage != null`):** Se provocó activando el modo *Offline* en la pestaña *Network* de Chrome DevTools y pulsando el botón de actualizar. La pantalla muestra el ícono de desconexión, el mensaje *"No se pudieron cargar las tareas."* y el botón **Reintentar**, el cual vuelve a ejecutar `loadTasks()` y recupera la lista completa sin necesidad de reiniciar la app tras reactivar la red.
