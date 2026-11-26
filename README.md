@@ -82,3 +82,11 @@ TaskFlow distingue cuatro estados explícitos durante la carga de tareas desde l
 * **Éxito (`tasks.isNotEmpty`):** Renderiza las 20 tareas del usuario `3` dentro de un `RefreshIndicator` + `ListView.builder`, permitiendo actualizar deslizando hacia abajo o pulsando el ícono superior.
 * **Vacío (`isEmpty == true`):** Se provocó cambiando temporalmente la constante `userId` a `9999` en `TaskApiService`. El servidor responde con HTTP 200 y lista vacía (`[]`), mostrando el ícono de bandeja vacía, el mensaje *"No hay tareas asignadas a este usuario."* y el botón **Actualizar**.
 * **Error (`errorMessage != null`):** Se provocó activando el modo *Offline* en la pestaña *Network* de Chrome DevTools y pulsando el botón de actualizar. La pantalla muestra el ícono de desconexión, el mensaje *"No se pudieron cargar las tareas."* y el botón **Reintentar**, el cual vuelve a ejecutar `loadTasks()` y recupera la lista completa sin necesidad de reiniciar la app tras reactivar la red.
+
+## Formulario de creación y validación de tareas
+
+TaskFlow incorpora la pantalla `TaskFormScreen` en la ruta `/new` utilizando `Form`, `GlobalKey<FormState>` y controladores `TextEditingController` liberados en `dispose()`:
+
+* **Validaciones personalizadas:** Requiere un título obligatorio de al menos 3 caracteres, admite descripción opcional y selección de prioridad (`Alta`, `Media`, `Baja`).
+* **Fecha límite opcional:** Integra `showDatePicker` para seleccionar una fecha opcional sin bloquear el guardado si se omite.
+* **Retorno de borrador:** Al pasar la validación, `context.pop(draft)` devuelve un objeto `TaskDraft` a `TaskListScreen`, mostrando un `SnackBar` de confirmación sin realizar aún envío remoto (`POST`).
