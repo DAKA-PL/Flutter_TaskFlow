@@ -2,12 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class TaskDraft {
-  const TaskDraft(
-    this.title,
-    this.description,
-    this.priority, {
-    this.dueDate,
-  });
+  const TaskDraft(this.title, this.description, this.priority, {this.dueDate});
 
   final String title;
   final String description;
@@ -112,13 +107,12 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
               ),
               items: ['Alta', 'Media', 'Baja']
                   .map(
-                    (value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(value),
-                    ),
+                    (value) =>
+                        DropdownMenuItem(value: value, child: Text(value)),
                   )
                   .toList(),
-              onChanged: (value) => setState(() => _priority = value ?? 'Media'),
+              onChanged: (value) =>
+                  setState(() => _priority = value ?? 'Media'),
             ),
             const SizedBox(height: 16),
             OutlinedButton.icon(

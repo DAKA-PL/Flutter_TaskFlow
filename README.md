@@ -90,3 +90,12 @@ TaskFlow incorpora la pantalla `TaskFormScreen` en la ruta `/new` utilizando `Fo
 * **Validaciones personalizadas:** Requiere un título obligatorio de al menos 3 caracteres, admite descripción opcional y selección de prioridad (`Alta`, `Media`, `Baja`).
 * **Fecha límite opcional:** Integra `showDatePicker` para seleccionar una fecha opcional sin bloquear el guardado si se omite.
 * **Retorno de borrador:** Al pasar la validación, `context.pop(draft)` devuelve un objeto `TaskDraft` a `TaskListScreen`, mostrando un `SnackBar` de confirmación sin realizar aún envío remoto (`POST`).
+
+## Operaciones CRUD HTTP (POST, PATCH y DELETE)
+
+TaskFlow completa el ciclo de creación, edición y eliminación contra la API REST mediante **Dio** en `TaskApiService`:
+
+* **Crear (`POST /todos`):** Envía un mapa JSON con `title`, `completed: false` y `userId`, incorporando la nueva tarea a la lista local tras confirmar la respuesta del servidor.
+* **Actualizar (`PATCH /todos/:id`):** Permite editar el título desde `TaskDetailScreen` mediante un diálogo validado y actualiza la interfaz tras recibir confirmación HTTP.
+* **Eliminar (`DELETE /todos/:id`):** Muestra un diálogo de confirmación (`AlertDialog`) antes de ejecutar la petición y eliminar el registro del listado.
+* **Persistencia simulada en JSONPlaceholder:** Aunque la API responde con éxito a las peticiones `POST`, `PATCH` y `DELETE`, **simula las escrituras** sin guardarlas de forma permanente. Al reiniciar la aplicación o volver a consultar `GET /todos`, el servidor devuelve su catálogo original.
